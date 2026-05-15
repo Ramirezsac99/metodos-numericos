@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1ulw6eyqn7da!6q=+96b5%$%7y(f(3l&!_9)um7o+nchmn-&c+
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = ['https://metodos-numericos-production-67e5.up.railway.app']
 
 # Application definition
 
@@ -117,7 +117,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
 import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
