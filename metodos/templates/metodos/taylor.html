@@ -1,0 +1,79 @@
+{% extends 'metodos/base.html' %}
+{% block title %}Serie de Taylor{% endblock %}
+{% block content %}
+<h2 class="fw-bold mb-1">Serie de Taylor</h2>
+<p class="text-muted">Aproximación polinomial de una función alrededor de un punto.</p>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h5>Información del método</h5>
+    <p>La serie de Taylor aproxima cualquier función suave como un polinomio infinito. Truncando en el término n obtenemos el polinomio de Taylor de grado n.</p>
+    <div class="formula-box">f(x) ≈ Σ f⁽ⁿ⁾(x₀) / n! · (x − x₀)ⁿ</div>
+    <ul>
+      <li><strong>x₀:</strong> Punto de expansión (centro de la serie)</li>
+      <li><strong>n:</strong> Grado del polinomio</li>
+      <li><strong>Mientras mayor n:</strong> Mejor aproximación</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card mb-4">
+ <div class="card-header text-white" style="background:#1a1a1a; border-left:4px solid #20c9aa;"><h5 class="mb-0" style="color:#20c9aa;">Calculadora</h5></div>
+  <div class="card-body">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Función f(x)</label>
+          <input type="text" name="funcion" class="form-control" placeholder="Ej: sin(x), exp(x), cos(x)" required>
+          <small class="text-muted">Usa sin(x), cos(x), exp(x), log(x)</small>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Punto de expansión x₀</label>
+          <input type="number" name="x0" step="any" class="form-control" placeholder="Ej: 0" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Grado n</label>
+          <input type="number" name="n" min="1" max="10" class="form-control" placeholder="Ej: 5" required>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn w-100" style="background:linear-gradient(90deg,#20c9aa,#0f9e84); color:#000; font-weight:600;">Calcular</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if error %}<div class="alert alert-danger">Error: {{ error }}</div>{% endif %}
+
+{% if resultado %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h5>Polinomio de Taylor resultante</h5>
+    <div class="formula-box">P(x) = {{ resultado.polinomio }}</div>
+    <p class="text-muted mt-2">f(x) = {{ resultado.funcion }}</p>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header"><h5 class="mb-0">Tabla de términos</h5></div>
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr><th>n</th><th>f⁽ⁿ⁾(x₀)</th><th>Término</th><th>Aproximación acumulada</th></tr>
+      </thead>
+      <tbody>
+        {% for it in resultado.iteraciones %}
+        <tr>
+          <td>{{ it.n }}</td>
+          <td>{{ it.derivada }}</td>
+          <td>{{ it.termino }}</td>
+          <td>{{ it.aprox }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

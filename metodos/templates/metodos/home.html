@@ -1,0 +1,181 @@
+{% extends 'metodos/base.html' %}
+{% block title %}Metodos Numericos{% endblock %}
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600&display=swap');
+
+  .hero-section {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
+    padding: 90px 20px 80px;
+    position: relative; overflow: hidden; margin: -1.5rem -12px 0;
+  }
+  .hero-section::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(32,201,170,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(32,201,170,0.08) 0%, transparent 50%);
+  }
+  .hero-grid {
+    display:grid; grid-template-columns:1fr auto;
+    align-items:center; max-width:960px; margin:0 auto; gap:40px; position:relative; z-index:1;
+  }
+  .hero-tag {
+    display:inline-block; background:rgba(32,201,170,0.15); border:1px solid rgba(32,201,170,0.4);
+    color:#20c9aa; font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    padding:6px 16px; border-radius:99px; margin-bottom:16px;
+  }
+  .hero-title {
+    font-family:'Syne',sans-serif; font-size:3.4rem; font-weight:800;
+    color:#fff; line-height:1.1; margin-bottom:14px;
+  }
+  .hero-title span { color:#20c9aa; }
+  .hero-sub { color:rgba(255,255,255,0.55); font-size:1.05rem; font-weight:300; line-height:1.7; max-width:480px; }
+  .hero-right { display:flex; flex-direction:column; gap:12px; align-items:flex-end; }
+  .hero-stat {
+    background:rgba(255,255,255,0.05); border:1px solid rgba(32,201,170,0.25);
+    border-radius:12px; padding:16px 24px; text-align:center; min-width:130px;
+  }
+  .hero-stat .num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:#20c9aa; }
+  .hero-stat .lbl { font-size:11px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; }
+
+  .wave-divider { display:block; width:100%; overflow:hidden; line-height:0; background:#0a0a0a; }
+  .wave-divider svg { display:block; }
+
+  .cards-section { max-width:980px; margin:0 auto; padding:60px 20px 80px; }
+  .section-label {
+    text-align:center; font-size:12px; font-weight:600;
+    letter-spacing:3px; text-transform:uppercase; color:#20c9aa; margin-bottom:10px;
+  }
+  .section-title {
+    font-family:'Syne',sans-serif; font-size:2rem; font-weight:700;
+    color:#0a0a0a; text-align:center; margin-bottom:50px;
+  }
+
+  .top-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  .bottom-row { display:flex; justify-content:center; }
+  .bottom-row .metodo-card { max-width:480px; width:100%; }
+
+  .metodo-card {
+    border-radius:16px; overflow:hidden;
+    box-shadow:0 8px 32px rgba(0,0,0,0.18);
+    transition:transform 0.25s, box-shadow 0.25s;
+    background:#1a1a1a;
+  }
+  .metodo-card:hover { transform:translateY(-6px); box-shadow:0 20px 48px rgba(0,0,0,0.28); }
+
+  .card-accent { height:5px; width:100%; background:linear-gradient(90deg,#20c9aa,#0f9e84); }
+  .card-accent-2 { height:5px; width:100%; background:linear-gradient(90deg,#111,#20c9aa); }
+
+  .card-inner { padding:26px 26px 22px; }
+  .card-icon {
+    width:46px; height:46px; border-radius:10px;
+    background:rgba(32,201,170,0.12); border:1px solid rgba(32,201,170,0.25);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; margin-bottom:14px;
+  }
+  .card-badge {
+    display:inline-block; font-size:11px; font-weight:600;
+    padding:3px 10px; border-radius:99px; margin-bottom:10px;
+    background:rgba(32,201,170,0.15); color:#20c9aa; border:1px solid rgba(32,201,170,0.3);
+  }
+  .card-name { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; margin-bottom:8px; }
+  .card-desc { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.6; margin-bottom:16px; }
+
+  .formula-strip {
+    background:rgba(255,255,255,0.04); border-radius:8px;
+    padding:10px 13px; font-family:'Courier New',monospace;
+    font-size:0.82rem; color:#20c9aa; margin-bottom:18px;
+    border-left:3px solid #20c9aa;
+  }
+
+  .card-btn {
+    display:block; width:100%; text-align:center;
+    padding:11px; border-radius:9px; font-weight:600;
+    font-size:0.92rem; text-decoration:none; border:none; cursor:pointer;
+    background:linear-gradient(90deg,#20c9aa,#0f9e84); color:#000;
+    transition:filter 0.15s, transform 0.1s; letter-spacing:0.3px;
+  }
+  .card-btn:hover { filter:brightness(1.1); transform:scale(0.98); color:#000; }
+
+  .footer-strip {
+    background:#0a0a0a; text-align:center; padding:22px;
+    font-size:0.85rem; color:rgba(255,255,255,0.25);
+    border-top:1px solid rgba(32,201,170,0.15);
+  }
+
+  @media(max-width:680px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-right{ flex-direction:row; }
+    .hero-title{ font-size:2.2rem; }
+    .top-row{ grid-template-columns:1fr; }
+    .bottom-row .metodo-card{ max-width:100%; }
+  }
+</style>
+
+<!-- HERO -->
+<div class="hero-section">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-tag">Análisis Numérico</div>
+      <h1 class="hero-title">Métodos<br><span>Numéricos</span></h1>
+      <p class="hero-sub">Explora, aprende y calcula los principales métodos numéricos para encontrar raíces de funciones y aproximar soluciones matemáticas.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="num">3</div><div class="lbl">Métodos</div></div>
+      <div class="hero-stat"><div class="num">∞</div><div class="lbl">Funciones</div></div>
+      <div class="hero-stat"><div class="num">⚡</div><div class="lbl">Tiempo real</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WAVE -->
+
+
+<!-- CARDS -->
+<div class="cards-section">
+  <div class="section-label">Elige un método</div>
+  <div class="section-title">¿Con cuál quieres trabajar?</div>
+
+  <div class="top-row">
+    <div class="metodo-card">
+      <div class="card-accent"></div>
+      <div class="card-inner">
+        <div class="card-icon">📈</div>
+        <span class="card-badge">Convergencia cuadrática</span>
+        <div class="card-name">Newton-Raphson</div>
+        <p class="card-desc">Parte de un punto inicial x₀ y usa la tangente a la curva para aproximarse rápidamente a la raíz.</p>
+        <div class="formula-strip">xₙ₊₁ = xₙ − f(xₙ) / f'(xₙ)</div>
+        <a href="/newton/" class="card-btn">Ir al método →</a>
+      </div>
+    </div>
+
+    <div class="metodo-card">
+      <div class="card-accent-2"></div>
+      <div class="card-inner">
+        <div class="card-icon">🔧</div>
+        <span class="card-badge">Raíces múltiples</span>
+        <div class="card-name">Newton-Raphson Modificado</div>
+        <p class="card-desc">Variante para raíces de multiplicidad m &gt; 1. Multiplica el paso por m para restaurar la convergencia.</p>
+        <div class="formula-strip">x₁ = x₀ − m · f(x₀) / f'(x₀)</div>
+        <a href="/newton-mod/" class="card-btn">Ir al método →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="metodo-card">
+      <div class="card-accent"></div>
+      <div class="card-inner">
+        <div class="card-icon">📐</div>
+        <span class="card-badge">Aproximación polinomial</span>
+        <div class="card-name">Serie de Taylor</div>
+        <p class="card-desc">Aproxima cualquier función suave como un polinomio de grado n alrededor del punto x₀. A mayor n, mejor la aproximación.</p>
+        <div class="formula-strip">f(x) ≈ Σ f⁽ⁿ⁾(x₀) / n! · (x − x₀)ⁿ</div>
+        <a href="/taylor/" class="card-btn">Ir al método →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

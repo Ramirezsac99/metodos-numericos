@@ -1,0 +1,84 @@
+{% extends 'metodos/base.html' %}
+{% block title %}Bisección{% endblock %}
+{% block content %}
+<h2 class="fw-bold mb-1">Método de Bisección</h2>
+<p class="text-muted">Método cerrado — siempre converge si f(a)·f(b) &lt; 0.</p>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h5>Información del método</h5>
+    <p>Divide el intervalo [a, b] a la mitad en cada iteración. Requiere que la raíz esté contenida en el intervalo inicial.</p>
+    <div class="formula-box">c = (a + b) / 2</div>
+    <ul>
+      <li><strong>Convergencia:</strong> Lineal (orden 1)</li>
+      <li><strong>Requiere:</strong> f(a)·f(b) &lt; 0</li>
+      <li><strong>Ventaja:</strong> Siempre converge</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-danger text-white"><h5 class="mb-0">Calculadora</h5></div>
+  <div class="card-body">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Función f(x)</label>
+          <input type="text" name="funcion" class="form-control" placeholder="Ej: x**3 - x - 2" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Límite inferior a</label>
+          <input type="number" name="a" step="any" class="form-control" placeholder="Ej: 1" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Límite superior b</label>
+          <input type="number" name="b" step="any" class="form-control" placeholder="Ej: 2" required>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-danger w-100">Calcular</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if error %}<div class="alert alert-danger">Error: {{ error }}</div>{% endif %}
+
+{% if resultado %}
+<div class="card mb-4">
+  <div class="card-body text-center">
+    <h5>Raíz encontrada</h5>
+    <span class="badge badge-raiz text-white">x ≈ {{ resultado.raiz }}</span>
+    <p class="mt-2 text-muted">f(x) = {{ resultado.funcion }}</p>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header"><h5 class="mb-0">Tabla de iteraciones</h5></div>
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr><th>i</th><th>a</th><th>b</th><th>c</th><th>f(c)</th><th>Error</th></tr>
+      </thead>
+      <tbody>
+        {% for it in resultado.iteraciones %}
+        <tr><td>{{ it.i }}</td><td>{{ it.a }}</td><td>{{ it.b }}</td><td>{{ it.c }}</td><td>{{ it.fc }}</td><td>{{ it.error }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header"><h5 class="mb-0">Gráfica de convergencia</h5></div>
+  <div class="card-body"><div id="graficaBis"></div></div>
+</div>
+<script>
+  const iters = {{ resultado.iteraciones | safe }};
+  Plotly.newPlot('graficaBis', [
+    { x: iters.map(r=>r.i), y: iters.map(r=>r.error), type:'scatter', mode:'lines+markers', name:'Error', line:{color:'#e63946'} }
+  ], { title:'Convergencia — Error por iteración', xaxis:{title:'Iteración'}, yaxis:{title:'Error'}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)' });
+</script>
+{% endif %}
+{% endblock %}
